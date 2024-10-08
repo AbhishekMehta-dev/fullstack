@@ -161,7 +161,7 @@ const Register = () => {
 
       {/* Sliding Notification Bar */}
       {showMessage && (
-        <div className="fixed top-0 right-0 left-0 bg-blue-600 text-white p-4 font-semibold shadow-lg transform transition-all duration-500 ease-in-out translate-y-0 animate-slide-in">
+        <div className="fixed top-0 right-0 left-0 bg-green-600 text-white p-4 font-semibold shadow-lg transform transition-all duration-500 ease-in-out translate-y-0 animate-slide-in">
           <p className="text-center">{message}</p>
         </div>
       )}
