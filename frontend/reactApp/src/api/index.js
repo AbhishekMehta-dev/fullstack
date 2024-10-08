@@ -8,7 +8,7 @@ const registerUser = async()=>{
         body: JSON.stringify({
             username: username,
             email: email,
-            password: 123456789,
+            password: password,
             fullname:fullname,
             role:role 
         }),
