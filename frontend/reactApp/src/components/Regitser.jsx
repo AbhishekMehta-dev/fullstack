@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const Register = () => {
 
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false); // Controls notification visibility
+  const [messageType, setMessageType] = useState("success"); // Controls message type
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -34,6 +37,7 @@ const Register = () => {
 
       if (response.ok) {
         setMessage("User registered successfully!"); // Success message
+        setMessageType("success");
         setShowMessage(true);
 
         // Clear form fields
@@ -44,12 +48,19 @@ const Register = () => {
           password: "",
           role: "user",
         });
+
+        // Automatically redirect after successful registration
+        setTimeout(() => {
+          navigate("/login"); // Redirect to login page or desired route
+        }, 2000); // Redirect after 2 seconds
       } else {
         setMessage(data.message || "Registration failed."); // Error message
+        setMessageType("error");
         setShowMessage(true);
       }
     } catch (error) {
       setMessage("An error occurred. Please try again."); // Error message for any other failure
+      setMessageType("error");
       setShowMessage(true);
     }
 
@@ -161,10 +172,18 @@ const Register = () => {
 
       {/* Sliding Notification Bar */}
       {showMessage && (
-        <div className="fixed top-0 right-0 m-4 bg-green-600 text-white p-4 font-semibold shadow-lg transform transition-all duration-500 ease-in-out translate-y-0 animate-slide-in">
-          <p className="text-center">{message}</p>
-        </div>
-      )}
+  <div
+    className={`fixed top-1/2 right-5 transform -translate-y-1/2 p-4 rounded-lg shadow-lg transition-all duration-500 ease-in-out animate-slide-in ${
+      messageType === "success"
+        ? "bg-green-500"
+        : messageType === "error"
+        ? "bg-red-500"
+        : "bg-blue-500"
+    } text-white font-semibold`}
+  >
+    <p>{message}</p>
+  </div>
+)}
     </div>
   );
 };

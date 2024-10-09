@@ -7,6 +7,8 @@ import Register from './components/Regitser.jsx';
 import Login from './components/Login.jsx';
 import Layout from './Layout.jsx';
 import Home from './components/Home.jsx'
+import Logout from './components/Logout.jsx';
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 
 
@@ -16,6 +18,7 @@ const router = createBrowserRouter(
       <Route path='home' element={<Home />} />
       <Route path='register' element={<Register />} />
       <Route path='login' element={<Login/>} />
+      <Route path='logout' element={<Logout />} />
       
     </Route>
   )
@@ -23,6 +26,8 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+     <AuthProvider>
     <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>,
 )
