@@ -56,7 +56,8 @@ const Login = () => {
         // Redirect after showing loader for 2 seconds
         setTimeout(() => {
           setIsLoading(false); // Hide loader
-          navigate("/home"); // Redirect to home
+          navigate("/home"); 
+          window.location.reload(); // Redirect to home
         }, 300);
       } else {
         // Handle errors if login fails
