@@ -48,6 +48,7 @@ export default function Header() {
               <>
                 <NavLink
                   to="/register"
+                  activeClassName="is-active"
                   className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
                 >
                   Register
@@ -55,6 +56,7 @@ export default function Header() {
 
                 <NavLink
                   to="/login"
+                  activeClassName="is-active"
                   className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
                 >
                   Login
@@ -71,6 +73,7 @@ export default function Header() {
               <li>
                 <NavLink
                   to="/home"
+                  activeClassName="is-active"
                   className="block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0"
                 >
                   Home

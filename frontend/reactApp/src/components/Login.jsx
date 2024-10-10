@@ -12,7 +12,7 @@ const Login = () => {
   
   const { login } = useAuth();  
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check if the user is already logged in on page load
   useEffect(() => {
