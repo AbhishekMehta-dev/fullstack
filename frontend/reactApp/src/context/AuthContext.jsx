@@ -1,37 +1,44 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { loginUser, logoutUser } from "../api/Auth.js"
 
-// Create Auth Context
 const AuthContext = createContext();
 
-// Auth Provider Component
-export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export const useAuth = () => useContext(AuthContext);
 
-  // Check local storage on initial load
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     if (token) {
-      setIsLoggedIn(true);
+      // Here you might want to validate the token with your backend
+      // For now, we'll just assume it's valid
+      setUser({ username: 'User' }); // Replace with actual user data
     }
   }, []);
 
-  // Login function
-  const login = (token) => {
-    localStorage.setItem("accessToken", token);
-    setIsLoggedIn(true);
+  const login = async (username, password) => {
+    try {
+      const data = await loginUser(username, password);
+      setUser({ username: username }); // Replace with actual user data from response
+      return data;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
+  const logout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

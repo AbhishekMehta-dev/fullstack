@@ -1,139 +1,85 @@
-import React, { useState, useEffect } from "react";
-import { Link,NavLink,useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
-import './Loader.css';  // Import the loader CSS
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const { login } = useAuth();  
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { login } = useAuth();
 
-  // Check if the user is already logged in on page load
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem("accessToken");
-    if (isLoggedIn) {
-      // Redirect to home if already logged in
-      navigate("/home");
-      
-    }
-  }, [login, navigate]);
-
-  // Handle input change
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setCredentials(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setIsLoading(true); // Show loader during form submission
-
+    setError('');
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Save token in localStorage
-        localStorage.setItem("accessToken", data.accessToken);
-
-        // Redirect after showing loader for 2 seconds
-        setTimeout(() => {
-          setIsLoading(false); // Hide loader
-          navigate("/home"); 
-          window.location.reload(); // Redirect to home
-        }, 300);
-      } else {
-        // Handle errors if login fails
-        setIsLoading(false); // Hide loader
-        alert(data.message || "Login failed.");
-      }
+      await login(credentials.username, credentials.password);
+      navigate('/');
     } catch (error) {
-      setIsLoading(false); // Hide loader on error
-      alert("An error occurred. Please try again.");
+      setError(error.message);
     }
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
-      <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-6">
-          Login
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Sign in to your account
         </h2>
-        
+      </div>
 
-        {isLoading ? (
-          // Show loader if loading is true
-          <div className="flex justify-center items-center">
-            <div className="loader"></div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            {/* Username Field */}
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 font-semibold mb-2"
-                htmlFor="username"
-              >
-                Username:
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
               </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
-                placeholder="Enter your username"
-              />
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={credentials.username}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* Password Field */}
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 font-semibold mb-2"
-                htmlFor="password"
-              >
-                Password:
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
-                placeholder="Enter your password"
-              />
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={credentials.password}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-600 hover:to-blue-600 focus:ring-2 focus:ring-purple-500 focus:outline-none transition duration-300"
-            >
-              Login
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Sign in
+              </button>
+            </div>
           </form>
-        )}
+        </div>
       </div>
     </div>
   );
