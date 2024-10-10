@@ -33,6 +33,7 @@ const registerUser = async (username, email, password, fullname, role) => {
         username,
         password,
       }),
+      credentials: 'include',
     });
     
     const data = await response.json();
@@ -51,6 +52,7 @@ const registerUser = async (username, email, password, fullname, role) => {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
       },
+      credentials: 'include',
     });
     
     localStorage.removeItem('accessToken');

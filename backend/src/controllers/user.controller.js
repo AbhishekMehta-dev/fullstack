@@ -74,7 +74,8 @@ const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._
 
  const options = {
      httpOnly: true,
-     secure: true
+     secure: true,
+    //  maxAge: 15 * 60 * 1000, // 15 minutes
  }
 
  return res
@@ -97,7 +98,7 @@ const logoutUser= async(req, res) => {
       req.user._id,
       {
           $unset: {
-              refreshToken: 1 // this removes the field from document
+              refreshToken: 1 
           }
       },
       {
@@ -107,7 +108,8 @@ const logoutUser= async(req, res) => {
 
   const options = {
       httpOnly: true,
-      secure: true
+      secure: true,
+      // maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   }
 
   return res
