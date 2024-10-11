@@ -11,6 +11,7 @@ const CategoryForm = () => {
   const [editingCategory, setEditingCategory] = useState(null); // For editing
   const { user } = useAuth();
 
+  // Fetch categories when the component loads
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -40,11 +41,23 @@ const CategoryForm = () => {
         // Update the category
         await updateCategory(editingCategory._id, { name, description }, accessToken);
         setSuccess('Category updated successfully!');
+
+        // Update the categories list in the state to reflect the changes
+        setCategories(
+          categories.map((cat) =>
+            cat._id === editingCategory._id ? { ...cat, name, description } : cat
+          )
+        );
+
         setEditingCategory(null);  // Reset form
       } else {
         // Create a new category
         await createCategory({ name, description }, accessToken);
         setSuccess('Category created successfully!');
+
+        // Re-fetch the categories after creating the new one
+        const updatedCategories = await getCategories();
+        setCategories(updatedCategories); // Re-fetch the updated categories list
       }
 
       // Clear form fields and reset success/error messages
@@ -78,7 +91,7 @@ const CategoryForm = () => {
   };
 
   return (
-<div className="container mx-auto p-6">
+    <div className="container mx-auto p-6">
       <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
           {editingCategory ? 'Update Category' : 'Add New Category'}
