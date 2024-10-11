@@ -6,37 +6,28 @@ const Home = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Handling the logout action
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  // If no user is logged in, display a message or redirect
-  if (!user) {
-    return (
-      <div className="container mx-auto mt-10 px-4">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
-          Welcome to Our App!
-        </h1>
-        <p className="text-lg text-gray-700 text-center mb-8">
-          You must be logged in to view this page. Please{' '}
-          <Link to="/login" className="text-blue-500 hover:underline font-semibold">
-            login
-          </Link>{' '}
-          or{' '}
-          <Link to="/register" className="text-blue-500 hover:underline font-semibold">
-            register
-          </Link>
-          .
-        </p>
-      </div>
-    );
-  }
+ 
+  // // If no user is logged in, display a message or redirect
+  // if (!user) {
+  //   return (
+  //     <div className="container mx-auto mt-10 px-4">
+  //       <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
+  //         Welcome to Our App!
+  //       </h1>
+  //       <p className="text-lg text-gray-700 text-center mb-8">
+  //         You must be logged in to view this page. Please{' '}
+  //         <Link to="/login" className="text-blue-500 hover:underline font-semibold">
+  //           login
+  //         </Link>{' '}
+  //         or{' '}
+  //         <Link to="/register" className="text-blue-500 hover:underline font-semibold">
+  //           register
+  //         </Link>
+  //         .
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto mt-10 px-4">
