@@ -19,7 +19,7 @@ import "./index.css";
 // Admin Route Component for protecting admin-only routes
 const AdminRoute = ({ children }) => {
   const { user } = useAuth();
-  return user && user.role === "admin" ? children : <Navigate to="/" />;
+  return  user && (user.role === "admin" || user.role === "agency")  ? children : <Navigate to="/" />;
 };
 
 const AppRoutes = () => {
@@ -39,7 +39,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
 
       {/* User Routes: Accessible by non-admin users */}
-      {user && user.role !== "admin" && (
+      {user && (user.role !== "admin" || user.role !== "agency") && (
         <Route
           path="/category"
           element={

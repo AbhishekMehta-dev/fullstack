@@ -36,6 +36,11 @@ const CategoryForm = () => {
 
     try {
       const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error("Access token not found. Please log in again.");
+      }
+  
+      // console.log("Access token:", accessToken); 
 
       if (editingCategory) {
         // Update the category
@@ -74,6 +79,12 @@ const CategoryForm = () => {
   const handleDelete = async (categoryId) => {
     try {
       const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error("Access token not found. Please log in again.");
+      }
+  
+      console.log("Access token for delete:", accessToken);
+
       await deleteCategory(categoryId, accessToken);
       setCategories(categories.filter(cat => cat._id !== categoryId));
       setSuccess('Category deleted successfully!');
