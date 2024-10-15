@@ -37,13 +37,17 @@ const Navbar = () => {
                   Home
                 </Link>
                 
-                {/* If user is admin, show the category link */}
+                {/* If user is admin, show the category link
                 {(user.role === 'admin' || user.role === 'agency') && (
   <Link to="/new-category" className="py-2 px-2 text-black hover:text-gray-200 transition duration-300">
     Category
   </Link>
+)} */}
+{(user.role === 'admin' || user.role === 'agency') && (
+  <Link to="/access-category" className="py-2 px-2 text-black hover:text-gray-200 transition duration-300">
+    Category
+  </Link>
 )}
-
 
                 <button onClick={handleLogout} className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded transition duration-300">
                   Logout

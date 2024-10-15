@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Layout from "./Layout";
 import CategoryList from "./components/CategoryList";
 import CategoryForm from "./components/CategoryForm";
+import CategoryAcceessForm from "./components/CategoryAccessFrom.jsx";
 import "./index.css";
 
 // Admin Route Component for protecting admin-only routes
@@ -56,6 +57,14 @@ const AppRoutes = () => {
         element={
           <AdminRoute>
             <CategoryForm />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/access-category"
+        element={
+          <AdminRoute>
+            <CategoryAcceessForm />
           </AdminRoute>
         }
       />

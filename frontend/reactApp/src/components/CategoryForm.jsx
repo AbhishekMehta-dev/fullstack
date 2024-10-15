@@ -1,178 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/Category';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from "react";
+import { getCategories, createCategory, updateCategory } from "../api/Category";
+import { useAuth } from "../context/AuthContext";
+import { useCategory } from "../context/CategoryContext"; // Import the context
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const CategoryForm = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const { categoryData, updateCategoryData } = useCategory(); // Use the context
+  const [name, setName] = useState(categoryData?.name || '');
+  const [description, setDescription] = useState(categoryData?.description || '');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [editingCategory, setEditingCategory] = useState(null); // For editing
   const { user } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
 
-  // Fetch categories when the component loads
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories();  // Ensure this function is correct
-        console.log('Categories fetched:', data);  // Debugging line to inspect data
-        setCategories(data);
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+    if (categoryData) {
+      setName(categoryData.name);
+      setDescription(categoryData.description);
+    }
+  }, [categoryData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name || !description) {
-      setError('Please provide both a category name and description.');
+      setError("Please provide both a category name and description.");
       return;
     }
 
     try {
-      const accessToken = localStorage.getItem('accessToken');
+      const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) {
         throw new Error("Access token not found. Please log in again.");
       }
-  
-      // console.log("Access token:", accessToken); 
 
-      if (editingCategory) {
-        // Update the category
-        await updateCategory(editingCategory._id, { name, description }, accessToken);
-        setSuccess('Category updated successfully!');
-
-        // Update the categories list in the state to reflect the changes
-        setCategories(
-          categories.map((cat) =>
-            cat._id === editingCategory._id ? { ...cat, name, description } : cat
-          )
-        );
-
-        setEditingCategory(null);  // Reset form
+      if (categoryData) {
+        await updateCategory(categoryData._id, { name, description }, accessToken);
+        setSuccess("Category updated successfully!");
       } else {
-        // Create a new category
         await createCategory({ name, description }, accessToken);
-        setSuccess('Category created successfully!');
-
-        // Re-fetch the categories after creating the new one
-        const updatedCategories = await getCategories();
-        setCategories(updatedCategories); // Re-fetch the updated categories list
+        setSuccess("Category created successfully!");
       }
 
-      // Clear form fields and reset success/error messages
+      // Clear form fields and context
       setName('');
       setDescription('');
-      setError(null);
+      updateCategoryData(null); // Clear the context
+      setError(null); // Clear any previous errors
+
+      // Redirect after successful creation or update
+      navigate("/access-category"); // Redirect here after success
     } catch (err) {
-      console.error('Failed to create or update category:', err);
-      setError('Failed to process category. Please try again.');
-      setSuccess(null);
+      console.error("Failed to create or update category:", err);
+      setError("Failed to process category. Please try again.");
     }
-  };
-
-  const handleDelete = async (categoryId) => {
-    try {
-      const accessToken = localStorage.getItem('accessToken');
-      if (!accessToken) {
-        throw new Error("Access token not found. Please log in again.");
-      }
-  
-      console.log("Access token for delete:", accessToken);
-
-      await deleteCategory(categoryId, accessToken);
-      setCategories(categories.filter(cat => cat._id !== categoryId));
-      setSuccess('Category deleted successfully!');
-    } catch (err) {
-      console.error('Failed to delete category:', err);
-      setError('Failed to delete category. Please try again.');
-      setSuccess(null);
-    }
-  };
-
-  const startEditing = (category) => {
-    setName(category.name);
-    setDescription(category.description);
-    setEditingCategory(category);  // Set category for editing
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
-          {editingCategory ? 'Update Category' : 'Add New Category'}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          {categoryData ? 'Update Category' : 'Add New Category'}
         </h2>
-
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600 mb-2">Category Name</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categoryName">
+              Category Name
+            </label>
             <input
               type="text"
+              id="categoryName"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
               placeholder="Enter category name"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-600 mb-2">Description</label>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categoryDescription">
+              Description
+            </label>
             <input
               type="text"
+              id="categoryDescription"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
               placeholder="Enter category description"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {error && <p className="text-red-500 text-sm italic mb-4">{error}</p>}
-          {success && <p className="text-green-500 text-sm italic mb-4">{success}</p>}
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none transition duration-300"
+          <button 
+            type="submit" 
+            className="bg-blue-500 text-white p-2 rounded-lg w-full hover:bg-blue-600 transition duration-300"
           >
-            {editingCategory ? 'Update Category' : 'Add Category'}
+            {categoryData ? 'Update Category' : 'Add Category'}
           </button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {success && <p className="text-green-500 mt-2">{success}</p>}
         </form>
       </div>
-
-      {/* Category List with Edit/Delete Options */}
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Existing Categories</h2>
-      {categories.length === 0 ? (
-        <p className="text-center text-gray-500">No categories available.</p>
-      ) : (
-        <ul>
-          {categories.map((category) => (
-            <li key={category._id} className="flex justify-between items-center mb-4 bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">{category.name}</h3>
-                <p className="text-gray-600">{category.description}</p>
-              </div>
-              <div className="flex space-x-3">
-                <button 
-                  className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300"
-                  onClick={() => startEditing(category)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
-                  onClick={() => handleDelete(category._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
