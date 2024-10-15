@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useCategory } from "../context/CategoryContext"; // Import the context
 import { useAuth } from "../context/AuthContext"; // Import authentication context
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import Swal from 'sweetalert2';
+
 
 const CategoryAccessForm = () => {
   const [categories, setCategories] = useState([]);
@@ -32,10 +34,35 @@ const CategoryAccessForm = () => {
         throw new Error("Access token not found. Please log in again.");
       }
 
-      await deleteCategory(categoryId, accessToken);
-      setCategories(categories.filter((cat) => cat._id !== categoryId));
+      // Confirm deletion with SweetAlert2
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      });
+
+      if (result.isConfirmed) {
+        await deleteCategory(categoryId, accessToken);
+        setCategories(categories.filter((cat) => cat._id !== categoryId));
+
+        // Show success message with SweetAlert2
+        Swal.fire(
+          'Deleted!',
+          'The category has been deleted.',
+          'success'
+        );
+      }
     } catch (err) {
       console.error("Failed to delete category:", err);
+      Swal.fire(
+        'Error!',
+        'There was an issue deleting the category.',
+        'error'
+      );
     }
   };
 
