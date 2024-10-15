@@ -45,7 +45,7 @@ const AppRoutes = () => {
           path="/category"
           element={
             <PrivateRoute>
-              <CategoryList />
+              <CategoryAcceessForm />
             </PrivateRoute>
           }
         />
@@ -61,7 +61,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/access-category"
+        path="/category"
         element={
           <AdminRoute>
             <CategoryAcceessForm />

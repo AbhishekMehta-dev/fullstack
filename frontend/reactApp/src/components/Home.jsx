@@ -39,18 +39,7 @@ const Home = () => {
           You are logged in as <strong>{user.role}</strong>. This is the home page, and it's only visible to authenticated users.
         </p>
 
-        <div className="flex justify-center space-x-6">
-          {/* Conditionally render the "Go to Category" button for normal users */}
-          {user.role === 'user' && (
-            <Link
-              to="/category"
-              className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 transform hover:scale-105"
-            >
-              Click to see all Categories
-            </Link>
-          )}
-        </div>
-
+        
         
       </div>
     </div>

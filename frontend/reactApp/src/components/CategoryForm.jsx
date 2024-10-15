@@ -49,7 +49,7 @@ const CategoryForm = () => {
       setError(null); // Clear any previous errors
 
       // Redirect after successful creation or update
-      navigate("/access-category"); // Redirect here after success
+      navigate("/category"); // Redirect here after success
     } catch (err) {
       console.error("Failed to create or update category:", err);
       setError("Failed to process category. Please try again.");
